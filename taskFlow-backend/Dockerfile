@@ -30,13 +30,16 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache && \
     chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Limpiar cachés antes de generar nuevos
-RUN php artisan config:clear && \
-    php artisan route:clear && \
-    php artisan view:clear
+# Crear script de inicio
+RUN echo '#!/bin/bash\n\
+php artisan migrate --force\n\
+php artisan config:cache\n\
+php artisan route:cache\n\
+apache2-foreground' > /usr/local/bin/start.sh && \
+chmod +x /usr/local/bin/start.sh
 
 # Exponer puerto 80
 EXPOSE 80
 
-# Comando de inicio
-CMD ["apache2-foreground"]
+# Comando de inicio que ejecuta migraciones
+CMD ["/usr/local/bin/start.sh"]
