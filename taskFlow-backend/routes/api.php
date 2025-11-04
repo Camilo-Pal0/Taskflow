@@ -7,10 +7,14 @@ use App\Http\Controllers\API\ProjectController;
 use App\Http\Controllers\API\ProjectMemberController;
 use App\Http\Controllers\API\TaskController;
 use App\Http\Controllers\API\UserController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::get('/test', function () {
+    return response()->json(['message' => 'API funcionando', 'db' => DB::connection()->getPdo() ? 'DB conectada' : 'DB error']);
+});
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::post('/logout', [AuthController::class, 'logout']);
