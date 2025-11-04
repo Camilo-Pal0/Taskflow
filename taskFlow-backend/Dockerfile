@@ -1,35 +1,33 @@
-FROM php:8.2-cli
+# Imagen base con PHP + Apache
+FROM php:8.2-apache
 
-# Instalar dependencias
+# Instalar extensiones necesarias
 RUN apt-get update && apt-get install -y \
     git \
-    curl \
-    libpq-dev \
     zip \
-    unzip
+    unzip \
+    libpq-dev && \
+    docker-php-ext-install pdo pdo_pgsql
 
-# Instalar extensiones de PHP
-RUN docker-php-ext-install pdo pdo_pgsql
+# Configurar DocumentRoot a /public
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf
+RUN a2enmod rewrite
+
+# Copiar proyecto
+COPY . /var/www/html
 
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Establecer directorio de trabajo
-WORKDIR /app
-
-# Copiar archivos
-COPY . .
-
-# Instalar dependencias de Composer
 RUN composer install --no-dev --optimize-autoloader
 
-# Cache de configuración
+# Generar cachés de Laravel
 RUN php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache
 
-# Exponer puerto
-EXPOSE 8080
+# Exponer el puerto (Render lo detecta automáticamente)
+EXPOSE 80
 
 # Comando de inicio
-CMD php artisan serve --host=0.0.0.0 --port=8080
+CMD ["apache2-foreground"]
