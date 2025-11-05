@@ -316,7 +316,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useProjectStore } from '@/stores/projectStore'
 import { useAuthStore } from '@/stores/authStore'
 import ProjectCard from '@/components/projects/ProjectCard.vue'
-import NavBar from '../components/common/NavBar.vue'
+import NavBar from '../components/common/Navbar.vue'
 import { useConfirm } from '@/composables/useConfirm'
 import { useToast } from '@/composables/useToast'
 

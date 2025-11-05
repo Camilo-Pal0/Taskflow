@@ -407,7 +407,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useProjectStore } from '@/stores/projectStore'
 import { useAuthStore } from '@/stores/authStore'
-import NavBar from '../components/common/NavBar.vue'
+import NavBar from '../components/common/Navbar.vue'
 
 const projectStore = useProjectStore()
 const authStore = useAuthStore()
